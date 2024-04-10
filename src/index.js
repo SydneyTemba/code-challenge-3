@@ -1,83 +1,85 @@
 // Your code here
-// Define the endpoint URL where movie data is hosted
-// Define the endpoint URL where movie data is hosted
-const endpointsURL = "http://localhost:3000/films";
+// Define the endpoint URL for movie data
+const endpointURL = "http://localhost:3000/films";
 
+// When the DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
+  // Get the film list and remove the placeholder item
   const filmList = document.getElementById("films");
   filmList.firstChild.remove();
-  // fetching films from the URL
-  fetchFilms(endpointsURL);
+  
+  // Fetch films from the endpoint
+  fetchFilms(endpointURL);
 });
 
-function fetchFilms(endpointsURL) {
-  fetch(endpointsURL)
+// Function to fetch films from the endpoint
+function fetchFilms(endpointURL) {
+  fetch(endpointURL)
     .then((response) => response.json())
     .then((movies) => {
+      // Iterate through movies and display them
       movies.forEach((movie) => {
-        // showing the movie details individually
         showMovie(movie);
       });
-      // adding click event to the movie list items
+      // Add click event listener to movie list items
       addClickEvent();
     });
 }
 
+// Function to display movie titles in the list
 function showMovie(movie) {
   const filmList = document.getElementById("films");
-  const li = document.createElement("li");
-  li.style.cursor = "pointer";
-  // showing movie title in uppercase
-  li.textContent = movie.title.toUpperCase();
-  filmList.appendChild(li);
+  const listItem = document.createElement("li");
+  listItem.style.cursor = "pointer";
+  listItem.textContent = movie.title.toUpperCase();
+  filmList.appendChild(listItem);
 }
 
+// Function to handle click events on movie list items
 function addClickEvent() {
   const listItems = document.querySelectorAll("#films li");
 
   listItems.forEach((listItem, index) => {
     listItem.addEventListener("click", () => {
-      // fetching individual movie details on click
-      fetchMovieData(index + 1); // Adding 1 to index to match the movie ID
+      fetchMovieData(index + 1); // Index + 1 to match movie ID
     });
   });
 }
 
+// Function to fetch and display individual movie details
 async function fetchMovieData(index) {
   try {
-    // fetching movie data based on index
-    const response = await fetch(`${endpointsURL}/${index}`);
+    const response = await fetch(`${endpointURL}/${index}`);
     const movie = await response.json();
-    // set up movie details on UI
     setUpMovieDetails(movie);
   } catch (error) {
     console.error("Error fetching movie data:", error);
   }
 }
 
+// Function to set up movie details on the UI
 function setUpMovieDetails(movie) {
-  // setting up poster image source
   const preview = document.getElementById("poster");
   preview.src = movie.poster;
-  // setting up movie title
+
   const movieTitle = document.getElementById("title");
   movieTitle.textContent = movie.title;
-  // setting up movie runtime
+
   const movieTime = document.getElementById("runtime");
   movieTime.textContent = `${movie.runtime} minutes`;
-  // setting up movie description
+
   const movieDescription = document.getElementById("film-info");
   movieDescription.textContent = movie.description;
-  // setting up movie showtime
+
   const showTime = document.getElementById("showtime");
   showTime.textContent = movie.showtime;
-  // calculating available tickets
+
   const tickets = document.getElementById("ticket-num");
   tickets.textContent = movie.capacity - movie.tickets_sold;
 }
 
+// Function to handle ticket purchase
 const btn = document.getElementById("buy-ticket");
-
 btn.addEventListener("click", function (e) {
   let remTickets = parseInt(
     document.getElementById("ticket-num").textContent,
@@ -85,10 +87,8 @@ btn.addEventListener("click", function (e) {
   );
   e.preventDefault();
   if (remTickets > 0) {
-    // showing tickets decreasing on purchase
     document.getElementById("ticket-num").textContent = remTickets - 1;
   } else if (remTickets === 0) {
-    // showing Sold out message when tickets are sold out
     btn.textContent = "Sold Out";
   }
 });
