@@ -1,8 +1,8 @@
 // Your code here
-// Define the endpoint URL for movie data
+
 const endpointURL = "http://localhost:3000/films";
 
-// When the DOM is loaded
+// When the DOM is loadede
 document.addEventListener("DOMContentLoaded", () => {
   // Get the film list and remove the placeholder item
   const filmList = document.getElementById("films");
